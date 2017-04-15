@@ -16,4 +16,25 @@ module Geolocation
     end
 
   end
+
+  class << self
+    attr_accessor :configuration
+  end
+
+  def self.configure
+    self.configuration ||= Configuration.new
+    yield(configuration)
+  end
+
+  class Configuration
+    attr_accessor :enabled
+    attr_accessor :uploads_dir
+    attr_accessor :data_dump_csv
+
+    def initialize
+      @enabled = true
+      @uploads_dir = 'uploads'
+      @data_dump_csv = 'data_dump.csv'
+    end
+  end
 end

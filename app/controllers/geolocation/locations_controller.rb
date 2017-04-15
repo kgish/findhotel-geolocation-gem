@@ -33,18 +33,18 @@ module Geolocation
     # POST /import_data.json
     def import_data
 
-      start = Time.now
-
-      # TODO: make configurable
-      uploads_dir = 'uploads'
-      data_dump_csv = "#{uploads_dir}/data_dump_small.csv"
-      data_dump_path = "#{Rails.root}/../../#{data_dump_csv}"
+      config = Geolocation.configuration
+      data_dump_csv = "#{config.uploads_dir}/#{config.data_dump_csv}"
+      data_dump_path = "#{Rails.root}/#{data_dump_csv}"
 
       Location.delete_all
+
+      start = Time.now
 
       line = 0
       nok = 0
       errors = []
+
       CSV.foreach(data_dump_path, headers: true) do |row|
         line = line + 1
         location_hash = row.to_hash
@@ -55,8 +55,8 @@ module Geolocation
           errors.push({
             line: line,
             values: location_hash.values.join(','),
-            messages: invalid.record.errors.messages}
-          )
+            messages: invalid.record.errors.messages
+          })
         end
       end
 
