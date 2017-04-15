@@ -19,7 +19,7 @@ module Geolocation
 
     def ip_address
       begin
-        location = Location.find_by(ip_address: params[:id])
+        location = Location.find_by(ip_address: params[:ip_address])
         if location
           render json: { location: location }
         else
@@ -36,14 +36,16 @@ module Geolocation
       start = Time.now
 
       # TODO: make configurable
-      data_dump_csv = "#{Rails.root}/../../uploads/data_dump_small.csv"
+      uploads_dir = 'uploads'
+      data_dump_csv = "#{uploads_dir}/data_dump_small.csv"
+      data_dump_path = "#{Rails.root}/../../#{data_dump_csv}"
 
       Location.delete_all
 
       line = 0
       nok = 0
       errors = []
-      CSV.foreach(data_dump_csv, headers: true) do |row|
+      CSV.foreach(data_dump_path, headers: true) do |row|
         line = line + 1
         location_hash = row.to_hash
         begin
@@ -65,16 +67,16 @@ module Geolocation
       render json: {
         import_data: {
           dumpfile: data_dump_csv,
+          stopwatch: {
+              started: start.to_s,
+              finished: now.to_s,
+              elapsed: elapsed.to_s
+          },
           records: {
               total: line,
               ok: line - nok,
               nok: nok,
               errors: errors
-          },
-          stopwatch: {
-              started: start.to_s,
-              finished: now.to_s,
-              elapsed: elapsed.to_s
           }
         }
       }
