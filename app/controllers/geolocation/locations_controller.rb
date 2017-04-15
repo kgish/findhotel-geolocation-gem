@@ -23,7 +23,12 @@ module Geolocation
 
       data_dump_csv = "#{Rails.root}/../../uploads/data_dump.csv"
 
+      Location.delete_all
+
       data = CSV.read(data_dump_csv)
+      header = data.shift
+      data.each_with_index do |rec, index|
+      end
 
       # Statistics
       now = Time.now
@@ -31,7 +36,8 @@ module Geolocation
 
       render json: { import_data: {
           dumpfile: data_dump_csv,
-          records: data.count - 1,
+          header: header.inspect,
+          records: data.count,
           stopwatch: {
               started: start.to_s,
               finished: now.to_s,
