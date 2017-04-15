@@ -17,6 +17,19 @@ module Geolocation
     def show
     end
 
+    def ip_address
+      begin
+        location = Location.find_by(ip_address: params[:id])
+        if location
+          render json: { location: location }
+        else
+          render json: { errors: ['404 Not found'] }, status: :not_found
+        end
+      rescue ActiveRecord::StatementInvalid => invalid
+        render json: { errors: ['422 Invalid IP Address'] }, status: :unprocessable_entity
+      end
+    end
+
     # POST /import_data.json
     def import_data
 
