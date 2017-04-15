@@ -22,9 +22,10 @@ ActiveRecord::Schema.define(version: 20170415092520) do
     t.string   "city"
     t.float    "latitude"
     t.float    "longitude"
-    t.integer  "mystery_value"
+    t.bigint   "mystery_value"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+    t.index ["country_code", "country", "city"], name: "index_geolocation_locations_on_cccc", unique: true, using: :btree
     t.index ["ip_address"], name: "index_geolocation_locations_on_ip_address", using: :btree
   end
 

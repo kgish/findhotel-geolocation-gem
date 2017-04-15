@@ -4,6 +4,7 @@ require_dependency "geolocation/application_controller"
 
 module Geolocation
   class LocationsController < ApplicationController
+    # TODO: implement authenticatio using apikey
     skip_before_action :verify_authenticity_token
     before_action :set_location, only: [:show]
 
@@ -21,29 +22,49 @@ module Geolocation
 
       start = Time.now
 
-      data_dump_csv = "#{Rails.root}/../../uploads/data_dump.csv"
+      # TODO: make configurable
+      data_dump_csv = "#{Rails.root}/../../uploads/data_dump_small.csv"
 
       Location.delete_all
 
-      data = CSV.read(data_dump_csv)
-      header = data.shift
-      data.each_with_index do |rec, index|
+      line = 0
+      nok = 0
+      errors = []
+      CSV.foreach(data_dump_csv, headers: true) do |row|
+        line = line + 1
+        location_hash = row.to_hash
+        begin
+          Location.create!(location_hash)
+        rescue ActiveRecord::RecordInvalid => invalid
+          nok = nok + 1
+          errors.push({
+            line: line,
+            values: location_hash.values.join(','),
+            messages: invalid.record.errors.messages}
+          )
+        end
       end
 
       # Statistics
       now = Time.now
       elapsed = now - start
 
-      render json: { import_data: {
+      render json: {
+        import_data: {
           dumpfile: data_dump_csv,
-          header: header.inspect,
-          records: data.count,
+          records: {
+              total: line,
+              ok: line - nok,
+              nok: nok,
+              errors: errors
+          },
           stopwatch: {
               started: start.to_s,
               finished: now.to_s,
               elapsed: elapsed.to_s
           }
-      } }
+        }
+      }
     end
 
     private
