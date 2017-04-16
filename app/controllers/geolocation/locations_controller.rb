@@ -4,7 +4,7 @@ require_dependency "geolocation/application_controller"
 
 module Geolocation
   class LocationsController < ApplicationController
-    # TODO: implement authenticatio using apikey
+    # TODO: implement authentication using apikey
     skip_before_action :verify_authenticity_token
     before_action :set_location, only: [:show]
 
@@ -23,22 +23,24 @@ module Geolocation
         if location
           render json: { location: location }
         else
-          render json: { errors: ['404 Not found'] }, status: :not_found
+          render_json_error('404 Not Found', :not_found)
         end
       rescue ActiveRecord::StatementInvalid
-        render json: { errors: ['422 Invalid IP Address'] }, status: :unprocessable_entity
+        render_json_error('422 Invalid IP Address', :unprocessable_entity)
       end
     end
 
     # POST /import_data
     def import_data
 
+      # Get necessary configuration parameters
       config = Geolocation.configuration
-      data_dump_csv = "#{config.uploads_dir}/#{config.data_dump_csv}xxx"
+      data_dump_csv = "#{config.uploads_dir}/#{config.data_dump_csv}"
       data_dump_path = "#{Rails.root}/#{data_dump_csv}"
 
       Location.delete_all
 
+      # Stopwatch for this transaction
       start = Time.now
 
       line = 0
@@ -82,7 +84,7 @@ module Geolocation
             }
         }
       rescue Errno::ENOENT
-        render json: { errors: ['422 No such file or directory'] }, status: :unprocessable_entity
+        render_json_error('422 No such file or directory', :unprocessable_entity)
       end
     end
 
