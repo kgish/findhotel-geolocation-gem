@@ -34,11 +34,15 @@ module Geolocation
     attr_accessor :enabled
     attr_accessor :uploads_dir
     attr_accessor :data_dump_csv
+    attr_accessor :allow_missing_city
+    attr_accessor :allow_missing_latlong
 
     def initialize
       @enabled = true
       @uploads_dir = 'uploads'
       @data_dump_csv = 'data_dump.csv'
+      @allow_missing_city = false
+      @allow_missing_latlong = false
     end
   end
 end

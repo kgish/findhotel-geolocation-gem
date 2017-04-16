@@ -38,6 +38,10 @@ module Geolocation
       data_dump_csv = "#{config.uploads_dir}/#{config.data_dump_csv}"
       data_dump_path = "#{Rails.root}/#{data_dump_csv}"
 
+      # TODO: allow missing city and latlong
+      allow_missing_city = config.allow_missing_city
+      allow_missing_latlong = config.allow_missing_latlong
+
       Location.delete_all
 
       # Stopwatch for this transaction
