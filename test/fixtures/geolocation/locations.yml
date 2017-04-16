@@ -1,19 +1,19 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  ip_address: 
-  country_code: MyString
-  country: MyString
-  city: MyString
-  latitude: 1.5
-  longitude: 1.5
-  mystery_value: 1
+  ip_address: 200.106.141.15
+  country_code: SI
+  country: Nepal
+  city: DuBuquemouth
+  latitude: -84.87503094689836
+  longitude: 7.206435933364332
+  mystery_value: 7823011346
 
 two:
-  ip_address: 
-  country_code: MyString
-  country: MyString
-  city: MyString
-  latitude: 1.5
-  longitude: 1.5
-  mystery_value: 1
+  ip_address: 160.103.7.140
+  country_code: CZ
+  country: Nicaragua
+  city: New Neva
+  latitude: -68.31023296602508
+  longitude: -37.62435199624531
+  mystery_value: 7301823115

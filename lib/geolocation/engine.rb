@@ -26,6 +26,10 @@ module Geolocation
     yield(configuration)
   end
 
+  def self.reset
+    self.configuration = Configuration.new
+  end
+
   class Configuration
     attr_accessor :enabled
     attr_accessor :uploads_dir
