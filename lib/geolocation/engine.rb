@@ -32,17 +32,19 @@ module Geolocation
 
   class Configuration
     attr_accessor :enabled
-    attr_accessor :uploads_dir
-    attr_accessor :data_dump_csv
-    attr_accessor :allow_missing_city
-    attr_accessor :allow_missing_latlong
+    attr_accessor :file_name
+    attr_accessor :upload_dir
+    attr_accessor :allow_blank
+    attr_accessor :delete_all
+    attr_accessor :max_lines
 
     def initialize
       @enabled = true
-      @uploads_dir = 'uploads'
-      @data_dump_csv = 'data_dump.csv'
-      @allow_missing_city = false
-      @allow_missing_latlong = false
+      @file_name = 'data_dump.csv'
+      @upload_dir = 'uploads'
+      @allow_blank = false
+      @delete_all = true
+      @max_lines = 0
     end
   end
 end

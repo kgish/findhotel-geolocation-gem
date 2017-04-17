@@ -33,16 +33,34 @@ module Geolocation
     # POST /import_data
     def import_data
 
-      # Get necessary configuration parameters
+      # Get necessary configuration parameters, overruled by query parameters if present.
       config = Geolocation.configuration
-      data_dump_csv = "#{config.uploads_dir}/#{config.data_dump_csv}"
-      data_dump_path = "#{Rails.root}/#{data_dump_csv}"
+      file_name = params[:file_name] || config.file_name
+      upload_dir = params[:upload_dir] || config.upload_dir
 
-      # TODO: allow missing city and latlong
-      allow_missing_city = config.allow_missing_city
-      allow_missing_latlong = config.allow_missing_latlong
+      if params[:allow_blank]
+        allow_blank = params[:allow_blank] == 'true'
+      else
+        allow_blank = config.allow_blank
+      end
 
-      Location.delete_all
+      if params[:delete_all]
+        delete_all = params[:delete_all] == 'true'
+      else
+        delete_all = config.delete_all
+      end
+
+      if params[:max_lines]
+        max_lines = params[:max_lines]
+      else
+        max_lines = config.max_lines
+      end
+      max_lines = max_lines.to_i
+
+      file_name_path = "#{upload_dir}/#{file_name}"
+      full_path = "#{Rails.root}/#{file_name_path}"
+
+      Location.delete_all if delete_all
 
       # Stopwatch for this transaction
       start = Time.now
@@ -52,8 +70,9 @@ module Geolocation
       errors = []
 
       begin
-        CSV.foreach(data_dump_path, headers: true) do |row|
+        CSV.foreach(full_path, headers: true) do |row|
           line = line + 1
+          break if max_lines != 0 && line > max_lines
           location_hash = row.to_hash
           begin
             Location.create!(location_hash)
@@ -73,7 +92,11 @@ module Geolocation
 
         render json: {
             import_data: {
-                dumpfile: data_dump_csv,
+                file_name: file_name,
+                upload_dir: upload_dir,
+                allow_blank: allow_blank,
+                delete_all: delete_all,
+                max_lines: max_lines,
                 stopwatch: {
                     started: start.to_s,
                     finished: now.to_s,
