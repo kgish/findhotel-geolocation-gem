@@ -1,5 +1,25 @@
-# Geolocation
-Short description and motivation.
+# Geolocation gem
+
+Here is a technical description which covers the most important aspects of the geolocation gem.
+
+## Installation
+
+```shell
+git clone https://github.com/kgish/findhotel-geolocation-gem.git ~/projects
+```
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'geolocation', path: 'plugins/geolocation'
+```
+
+Finally, you'll need to include the new gem in the bundle:
+
+```shell
+bundle install
+```
+
 
 In the `app/controllers/geolocation/application_controller.rb` file I've defined the `render_json_error` method which can be inherited all controllers extending it:
 
@@ -262,38 +282,24 @@ Where:
 * `delete_all` means that the location table is emptied before the import starts
 * `max_lines` means limit the import to this number of lines
 
-## Installation
-
-```shell
-git clone https://github.com/kgish/findhotel-geolocation-gem.git ~/projects
-```
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'geolocation', path: 'plugins/geolocation'
-```
-
-Finally, you'll need to include the new gem in the bundle:
-
-```shell
-bundle install
-```
 
 ## Testing
 
-I use good old Minitest for verifying that the gem is working properly, namely:
+I use good old Minitest for verifying that the gem is working properly, namely by executing the commands:
 
-```
+```shell
 cd test/dummy
 bin/rails app:test
 ```
 
 The following tests are present:
 
-* location controller (index, show, ip_address and import_data) for :success, :not_found and :unprocessable_entity
-* configuration settings (all values)
-* location model (valid? and errors) for :ip_address, :country_code, :country, :city, :latitude, :longitude, :mystery_value and unique constraints
+* `test/models/geolocation/location_test.rb` - valid? and errors for :ip_address, :country_code, :country, :city, :latitude, :longitude, :mystery_value and unique constraints.
+* `test/controllers/geolocation/locations_controller_test.rb` - index, show, ip_address and import_data for :success, :not_found and :unprocessable_entity.
+* `test/integration/geolocation/configuration_test.rb` for all settings
+
+## Rails application
+
 
 
 ## Heroku App
