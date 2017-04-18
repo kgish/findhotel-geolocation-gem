@@ -118,7 +118,9 @@ module Geolocation
 
     validates :ip_address, :country, presence: true
     validates :latitude, :longitude, :mystery_value, presence: true, allow_blank: true
-    validates :country_code, format: { :with => /\A[A-Z][A-Z]\z/i, message: 'only allows two letters' }, allow_blank: true
+    validates :country_code,
+        format: { :with => /\A[A-Z][A-Z]\z/i, message: 'only allows two letters' },
+        allow_blank: true
     validates :city, uniqueness: {scope: [:country_code, :country]}, allow_blank: true
   end
 end
