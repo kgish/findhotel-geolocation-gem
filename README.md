@@ -246,7 +246,8 @@ In the `app/config/routes.rb` file:
 ```
 Geolocation::Engine.routes.draw do
   resources :locations, only: ['index', 'show']
-  get '/ip_address/:ip_address' => 'locations#ip_address', as: 'ip_address', constraints: { :ip_address => /[^\/]+/ }
+  get '/ip_address/:ip_address' => 'locations#ip_address', as: 'ip_address', \
+      constraints: { :ip_address => /[^\/]+/ }
   post '/import_data' => 'locations#import_data'
 end
 ```
@@ -437,9 +438,20 @@ The url is:
 https://findhotel-geolocator-demo.herokuapp.com/
 ```
 
+
 ## Dockerization
 
 ...
+
+
+## TODO
+
+...
+
+
+## License
+The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+
 
 ## Author
 
@@ -448,5 +460,3 @@ Kiffin Gish \< kiffin.gish@planet.nl \>
 \- You're never too old to learn new stuff.
 
 
-## License
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
