@@ -63,7 +63,7 @@ end
 
 The `import_data` will parse the CSV data file and insert the valid non-duplicate entries into the data store, and when completed returns a complete report in json format:
 
-```json
+```ruby
 render json: {
     import_data: {
         file_name: file_name,
@@ -88,7 +88,7 @@ render json: {
 
 where `errors` is a collection of rejected entries looking like this:
 
-```json
+```ruby
 {
     line: line,
     values: location_hash.values.join(','),
@@ -300,10 +300,64 @@ The following tests are present:
 
 ## Rails application
 
+I chose Ruby on Rails for building the demo application.
 
+On the home page you can enter an IP address and (hopefully) receive the matching location, otherwise an error is shown (invalid or not found).
+
+![Screenshot of the homepage](images/screenshot-homepage.png)
+
+The data import can also be initiated from the import page:
+
+![Screenshot of the import page](images/screenshot-import.png)
 
 ## Heroku App
 
+In order for the following to work properly, ensure that you've added the following lines (see above) to your `Gemfile`:
+
+```
+gem 'ember-cli-rails'
+```
+
+To configure your EmberCLI-Rails applications for Heroku:
+
+```
+$ bundle exec rails generate ember:heroku
+$ git add .
+$ git commit -m"Ran rails generate ember:heroku"
+```
+
+Make sure that you have heroku installed and then you can create the application:
+
+```
+heroku create findhotel-geolocator-demo
+```
+
+Add the NodeJS buildpack and configure NPM to include the bower dependency's executable file.
+
+```
+$ heroku buildpacks:clear
+$ heroku buildpacks:add --index 1 heroku/nodejs
+$ heroku buildpacks:add --index 2 heroku/ruby
+$ heroku config:unset SKIP_EMBER
+```
+
+You are ready to deploy:
+
+```
+$ git push heroku master
+```
+
+and fire it up:
+
+```
+$ heroku open
+```
+
+The url is:
+
+```
+https://findhotel-geolocator-demo.herokuapp.com/
+```
 
 
 ## Author
