@@ -38,6 +38,7 @@ module Geolocation
     attr_accessor :delete_all
     attr_accessor :max_lines
 
+    # Default values
     def initialize
       @enabled = true
       @file_name = 'data_dump.csv'
