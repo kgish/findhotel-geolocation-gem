@@ -41,6 +41,41 @@ module Geolocation
 end
 ```
 
+The `import_data` will parse the CSV data file and insert the valid non-duplicate entries into the data store, and when completed returns a complete report in json format:
+
+```json
+render json: {
+    import_data: {
+        file_name: file_name,
+        upload_dir: upload_dir,
+        allow_blank: allow_blank,
+        delete_all: delete_all,
+        max_lines: max_lines,
+        stopwatch: {
+            started: start.to_s,
+            finished: now.to_s,
+            elapsed: elapsed.to_s
+        },
+        records: {
+            total: line,
+            ok: line - nok,
+            nok: nok,
+            errors: errors
+        }
+    }
+}
+```
+
+where `errors` is a collection of rejected entries looking like this:
+
+```json
+{
+    line: line,
+    values: location_hash.values.join(','),
+    messages: e.record.errors.messages
+}
+```
+
 ## Migration
 
 ```
@@ -203,7 +238,7 @@ In the `app/lib/geolocation/engine.rb` file, I define a `configuration` accessor
   end
 ```
 
-In the application, this values can be modified by including an `app/config/initializer/geolocation.rb` file that looks like this:
+In the application, this values can be modified by including an `app/config/initializer/geolocation.rb` file that looks like this (defaults listed):
 
 ```ruby
 if defined? Geolocation
@@ -218,8 +253,14 @@ if defined? Geolocation
 end
 ```
 
-## Usage
-How to use my plugin.
+Where:
+
+* `enabled` means on/off (not yet implemented)
+* `file_name` is the name of the import data file
+* `upload_dir` is the directory where the file is located
+* `allow_blank` means that country_code, city, latitude and/or longitude may be empty (not yet implemented)
+* `delete_all` means that the location table is emptied before the import starts
+* `max_lines` means limit the import to this number of lines
 
 ## Installation
 
@@ -241,14 +282,23 @@ bundle install
 
 ## Testing
 
-I use good old Minitest for verifying that the gem is working properly:
+I use good old Minitest for verifying that the gem is working properly, namely:
 
 ```
 cd test/dummy
 bin/rails app:test
 ```
 
+The following tests are present:
+
+* location controller (index, show, ip_address and import_data) for :success, :not_found and :unprocessable_entity
+* configuration settings (all values)
+* location model (valid? and errors) for :ip_address, :country_code, :country, :city, :latitude, :longitude, :mystery_value and unique constraints
+
+
 ## Heroku App
+
+
 
 ## Author
 
