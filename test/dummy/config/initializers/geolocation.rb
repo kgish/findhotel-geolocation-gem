@@ -4,5 +4,5 @@ Geolocation.configure do |config|
   config.upload_dir = 'uploads'
   config.allow_blank = false
   config.delete_all = true
-  config.max_lines =
+  config.max_lines = 0
 end
