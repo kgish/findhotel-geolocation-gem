@@ -1,108 +1,58 @@
 # Geolocation gem
 
-Here is a technical description which covers the most important aspects of the geolocation gem.
+Here is a technical description covering the most important aspects of the geolocation gem, e.g. how you can easily install it right away, or if you prefer how to build everthing from scratch from start to end.
+
 
 ## Installation
 
+The installation is straighforward.
+
 ```shell
-git clone https://github.com/kgish/findhotel-geolocation-gem.git ~/projects
+$ git clone https://github.com/kgish/findhotel-geolocation-gem.git path-to-plugins/geolocation
 ```
 
-Add this line to your application's Gemfile:
+Add this line to your application's `Gemfile`:
 
 ```ruby
-gem 'geolocation', path: 'plugins/geolocation'
+gem 'geolocation', path: 'path-to-plugins/geolocation'
 ```
 
 Finally, you'll need to include the new gem in the bundle:
 
 ```shell
-bundle install
+$ bundle install
+```
+
+An example demo is available on Heroku by visiting the following link:
+
+```
+https://findhotel-geolocator-demo.herokuapp.com/
 ```
 
 
-In the `app/controllers/geolocation/application_controller.rb` file I've defined the `render_json_error` method which can be inherited all controllers extending it:
+## Create plugin
 
-```ruby
-module Geolocation
-  class ApplicationController < ActionController::Base
-    protect_from_forgery with: :exception
+In this section I will describe how I built the geolocation gem from scratch as well as the motivations behind my decisions.
 
-    def render_json_error(message, status)
-      render json: { errors: [message] }, status: status
-    end
-  end
-end
+First of all create the initial plugin.
+
+```shell
+$ rails plugin new geolocator --mountable --database=postgresql
+$ cd geolocator
 ```
 
-In the `app/controllers/geolocation/locations_controller.rb` file:
-
-```ruby
-module Geolocation
-  class LocationsController < ApplicationController
-
-    # GET /locations
-    def index
-      @locations = Location.all
-    end
-
-    # GET /locations/1
-    def show
-    end
-
-    # GET /ip_address/:id
-    def ip_address
-    end
-
-    # POST /import_data
-    def import_data
-    end
- end
-end
-```
-
-The `import_data` will parse the CSV data file and insert the valid non-duplicate entries into the data store, and when completed returns a complete report in json format:
-
-```ruby
-render json: {
-    import_data: {
-        file_name: file_name,
-        upload_dir: upload_dir,
-        allow_blank: allow_blank,
-        delete_all: delete_all,
-        max_lines: max_lines,
-        stopwatch: {
-            started: start.to_s,
-            finished: now.to_s,
-            elapsed: elapsed.to_s
-        },
-        records: {
-            total: line,
-            ok: line - nok,
-            nok: nok,
-            errors: errors
-        }
-    }
-}
-```
-
-where `errors` is a collection of rejected entries looking like this:
-
-```ruby
-{
-    line: line,
-    values: location_hash.values.join(','),
-    messages: e.record.errors.messages
-}
-```
+From now on it will be assumed unless otherwise specified that you are running commands from the plugin root directory.
 
 ## Migration
 
-```
-bin/rails g migration ....
+Generate the `Location` model and associated scaffolding:
+
+```shell
+$ bin/rails generate scaffold location ip_address:inet country_code:string country:string \
+    city:string latitude:float longitude:float mystery_value:string
 ```
 
-To produce the migration script:
+Add indexes and modify the migration script so that it looks something like this:
 
 ```
 class CreateGeolocationLocations < ActiveRecord::Migration[5.0]
@@ -117,20 +67,29 @@ class CreateGeolocationLocations < ActiveRecord::Migration[5.0]
       t.integer :mystery_value, limit: 8
     end
     add_index :geolocation_locations, :ip_address
-    add_index :geolocation_locations, [:country_code, :country, :city], unique: true, name: 'index_geolocation_locations_on_cccc'
+    add_index :geolocation_locations, [:country_code, :country, :city], unique: true, \
+        name: 'index_geolocation_locations_on_cccc'
   end
 end
 ```
 
-Type `inet` is supported by postgresql.
+Motivations:
 
-The 'ip_address` column is indexed to speed up queries since the IP address is used for searching the database.
+* Type `inet` is supported by postgresql.
+* The 'ip_address` column is indexed to speed up queries since the IP address is used for searching the database.
+* Also I index on a unique multi-column contraint for country_code, country and city assuming that the combination of these three values must be unique (first come first serve during the data import).
+* Had to implement a user-defined name `index_geolocation_locations_cccc` for the geolocation_locations index in order to avoid the name too long error.
 
-Also I index on a unique multi-column contraint for country_code, country and city assuming that the combination of these three values must be unique (first come first serve during the data import).
+Now we can run the migration:
 
-Had to implement a user-defined name `index_geolocation_locations_cccc` for the geolocation_locations index in order to avoid the name too long error.
+```script
+$ bin/rails db:create
+$ bin/rails db:migrate
+```
 
-## Model Validations
+## Models
+
+### Location model
 
 In the `app/models/geolocation/location.rb` file:
 
@@ -165,6 +124,98 @@ module Geolocation
 end
 ```
 
+Motivations:
+
+* ip_address MUST be a valid inet value
+* ip_address and country MUST be present
+* combination [country_code, country, city] is unique
+* longitude and latitude may be missing but when present must have a value within legal range
+* country_code MUST contain exactly 2 letters
+* other attributes may be missing
+
+## Controllers
+
+### Application controller
+
+In the `app/controllers/geolocation/application_controller.rb` file I've defined the `render_json_error` method which can be inherited all controllers extending it:
+
+```ruby
+module Geolocation
+  class ApplicationController < ActionController::Base
+    protect_from_forgery with: :exception
+
+    def render_json_error(message, status)
+      render json: { errors: [message] }, status: status
+    end
+  end
+end
+```
+
+### Locations controller
+
+In the `app/controllers/geolocation/locations_controller.rb` file:
+
+```ruby
+module Geolocation
+  class LocationsController < ApplicationController
+
+    # GET /locations
+    def index
+      @locations = Location.all
+    end
+
+    # GET /locations/1
+    def show
+    end
+
+    # GET /ip_address/:id
+    def ip_address
+        ...
+    end
+
+    # POST /import_data
+    def import_data
+        ...
+    end
+ end
+end
+```
+
+The `import_data` will parse the CSV data file and insert the valid non-duplicate entries into the data store, and when completed returns a complete report in json format:
+
+```ruby
+render json: {
+    import_data: {
+        file_name: file_name,
+        upload_dir: upload_dir,
+        allow_blank: allow_blank,
+        delete_all: delete_all,
+        max_lines: max_lines,
+        stopwatch: {
+            started: start.to_s,
+            finished: now.to_s,
+            elapsed: elapsed.to_s
+        },
+        records: {
+            total: line,
+            ok: line - nok,
+            nok: nok,
+            errors: errors
+        }
+    }
+}
+```
+
+where `errors` is a collection of all the rejected entries and has this format:
+
+```ruby
+{
+    line: line,
+    values: location_hash.values.join(','),
+    messages: e.record.errors.messages
+}
+```
+
 In the `app/lib/geolocation/engine.rb` file, I have the gem push migrations to the application migrations list:
 
 ```
@@ -185,6 +236,11 @@ module Geolocation
   end
 ```
 
+Motivation:
+
+* it is easier to be able to run the migrations as usual from the application root directory.
+* the application will generate an error on startup if this has accidentally been forgotten.
+
 In the `app/config/routes.rb` file:
 
 ```
@@ -195,9 +251,10 @@ Geolocation::Engine.routes.draw do
 end
 ```
 
-Notice how the `constraints` modifier is used in order to allow dots (.) to appear in the passed `:id` parameter.
+Motivation:
 
-I've also explicityly named the GET /ip_address rout with an as `ip_address` so that I can use `ip_address_url` in the tests.
+* the `constraints` modifier is used in order to allow dots (.) to appear in the passed `:id` parameter.
+* explicily named the GET /ip_address route with an `as: 'ip_address'` so that I can use `ip_address_url` in the tests (see below).
 
 In the `app/lib/geolocation/engine.rb` file, I have the gem mount itself in the application routes:
 
@@ -219,6 +276,11 @@ module Geolocation
   end
 end
 ```
+
+Motivation:
+
+* it should not be necessary for the application `routes.rb` file to have to be edited manually but rather it should be automatic.
+
 
 ## Configuration
 
@@ -298,9 +360,24 @@ The following tests are present:
 * `test/controllers/geolocation/locations_controller_test.rb` - index, show, ip_address and import_data for :success, :not_found and :unprocessable_entity.
 * `test/integration/geolocation/configuration_test.rb` for all settings
 
+If everything works according to plan, you should see something like this.
+
+```
+Run options: --seed 24560
+
+# Running:
+
+...............................
+
+Finished in 0.506299s, 61.2287 runs/s, 134.3080 assertions/s.
+
+31 runs, 68 assertions, 0 failures, 0 errors, 0 skips
+```
+
+
 ## Rails application
 
-I chose Ruby on Rails for building the demo application.
+I chose Ruby on Rails which is a wonderful framework for building demo applications.
 
 On the home page you can enter an IP address and (hopefully) receive the matching location, otherwise an error is shown (invalid or not found).
 
@@ -309,6 +386,7 @@ On the home page you can enter an IP address and (hopefully) receive the matchin
 The data import can also be initiated from the import page:
 
 ![Screenshot of the import page](images/screenshot-import.png)
+
 
 ## Heroku App
 
@@ -320,7 +398,7 @@ gem 'ember-cli-rails'
 
 To configure your EmberCLI-Rails applications for Heroku:
 
-```
+```shell
 $ bundle exec rails generate ember:heroku
 $ git add .
 $ git commit -m"Ran rails generate ember:heroku"
@@ -328,13 +406,13 @@ $ git commit -m"Ran rails generate ember:heroku"
 
 Make sure that you have heroku installed and then you can create the application:
 
-```
-heroku create findhotel-geolocator-demo
+```shell
+$ heroku create findhotel-geolocator-demo
 ```
 
 Add the NodeJS buildpack and configure NPM to include the bower dependency's executable file.
 
-```
+```shell
 $ heroku buildpacks:clear
 $ heroku buildpacks:add --index 1 heroku/nodejs
 $ heroku buildpacks:add --index 2 heroku/ruby
@@ -343,13 +421,13 @@ $ heroku config:unset SKIP_EMBER
 
 You are ready to deploy:
 
-```
+```shell
 $ git push heroku master
 ```
 
 and fire it up:
 
-```
+```shell
 $ heroku open
 ```
 
@@ -359,6 +437,9 @@ The url is:
 https://findhotel-geolocator-demo.herokuapp.com/
 ```
 
+## Dockerization
+
+...
 
 ## Author
 
