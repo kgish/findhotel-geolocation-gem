@@ -9,9 +9,9 @@ require 'minitest/autorun'
 module Geolocation
   class LocationTest < ActiveSupport::TestCase
     def setup
+      # Fixture:
       # one: 200.106.141.15,SI,Nepal,DuBuquemouth,-84.87503094689836,7.206435933364332,7823011346
       # two: 160.103.7.140,CZ,Nicaragua,New Neva,-68.31023296602508,-37.62435199624531,7301823115
-      # new: 70.95.73.73,TL,Saudi Arabia,Gradymouth,-49.16675918861615,-86.05920084416894,2559997162
       @location = Location.create({
         ip_address: '200.106.141.15',
         country_code: 'TL',
@@ -61,7 +61,7 @@ module Geolocation
     end
 
     test 'valid with modified legal country_code' do
-      @location.country_code = 'ZZ'
+      @location.country_code = 'NL'
       assert @location.valid?, 'saved location with modified legal country_code'
       assert_empty @location.errors[:country_code], 'validation error for country_code is absent'
     end
@@ -74,7 +74,7 @@ module Geolocation
     end
 
     test 'valid with modified legal country' do
-      @location.country = 'Name of Country'
+      @location.country = 'France'
       assert @location.valid?, 'saved location with modified legal country'
       assert_empty @location.errors[:country_code], 'validation error for country is absent'
     end
@@ -87,14 +87,60 @@ module Geolocation
     end
 
     test 'valid with modified legal city' do
-      @location.city = 'Name of City'
+      @location.city = 'Amsterdam'
       assert @location.valid?, 'saved location with modified legal city'
       assert_empty @location.errors[:city], 'validation error for city is absent'
     end
 
-    # --- Longitude --- #
-
     # --- Latitude --- #
+    test 'invalid with illegal latitude (< -90)' do
+      @location.latitude = -91.12345
+      refute @location.valid?, 'saved location with illegal latitude'
+      assert_not_nil @location.errors[:latitude], 'validation error for latitude is present'
+    end
+
+    test 'invalid with illegal latitude (> +90)' do
+      @location.latitude = 90.12345
+      refute @location.valid?, 'saved location with illegal latitude'
+      assert_not_nil @location.errors[:latitude], 'validation error for latitude is present'
+    end
+
+    test 'valid with missing latitude' do
+      @location.latitude = nil
+      assert @location.valid?, 'saved location with missing latitude'
+      assert_not_nil @location.errors[:latitude], 'validation error for latitude is present'
+    end
+
+    test 'valid with modified legal latitude' do
+      @location.latitude = -68.31023296602508
+      assert @location.valid?, 'saved location with modified legal latitude'
+      assert_empty @location.errors[:latitude], 'validation error for latitude is absent'
+    end
+
+    # --- Longitude --- #
+    test 'invalid with illegal longitude (< -180)' do
+      @location.longitude = -185.12345
+      refute @location.valid?, 'saved location with illegal longitude'
+      assert_not_nil @location.errors[:longitude], 'validation error for longitude is present'
+    end
+
+    test 'invalid with illegal longitude (> +180)' do
+      @location.longitude = 190.12345
+      refute @location.valid?, 'saved location with illegal longitude'
+      assert_not_nil @location.errors[:longitude], 'validation error for longitude is present'
+    end
+
+    test 'valid with missing longitude' do
+      @location.longitude = nil
+      assert @location.valid?, 'saved location with missing longitude'
+      assert_not_nil @location.errors[:longitude], 'validation error for longitude is present'
+    end
+
+    test 'valid with modified legal longitude' do
+      @location.longitude = 7.206435933364332
+      assert @location.valid?, 'saved location with modified legal longitude'
+      assert_empty @location.errors[:longitude], 'validation error for longitude is absent'
+    end
 
     # --- Mystery Value --- #
     test 'valid with missing mystery_value' do
@@ -104,6 +150,13 @@ module Geolocation
     end
 
     # --- Duplicates --- #
+    test 'invalid with duplicate country_code, country and city' do
+      @location.country_code = 'SI'
+      @location.country = 'Nepal'
+      @location.city = 'DuBuquemouth'
+      refute @location.valid?, 'saved location with duplicated country_code, country and city'
+      assert_not_nil @location.errors[:city], 'validation error for city is present'
+    end
 
   end
 end
