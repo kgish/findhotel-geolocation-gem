@@ -742,13 +742,13 @@ I am eager to learn more about Docker and the fun things you can do with it.
 
 ## TODO
 
-Unfortunately, I do not have alot of spare time lately, so for the sake of completeness (and ensuring that I complete this code challenge in time) I have listed here those items which I was unable to complete and must end up on the much dreaded todo list.
+Unfortunately, I do not have alot of spare time lately, so for the sake of completeness (and ensuring that I finish this code challenge in time) I have listed here those items which I was unable to complete and must end up on the much dreaded todo list (for a rainy day).
 
-* DB configuration - although I've made the gem configurable (see above) I was not able to make it DB configurable. To be honest, this doesn't make much sense since you're dependant on the database setup of the application using the gem, or not? I probably didn't understand the question completely is all.
+* DB configuration - although I've made the gem configurable (see above) I was not able to make it DB configurable. To be honest, this doesn't make much sense since you're dependant on the database setup of the application using the gem, or not? I probably didn't understand the question completely is all, or maybe there is a secret way to do this.
 * Containers - using the standard Heroku environment for Rails applications, I did not make full use of the dockerized containers.
-* Plugin autoloading - currently the user has to add the gem to the `Gemfile` and run bundle install, rails db:create and rails db:migrate manually. Better would be to use a mechanism to load all gem engines in the `/plugins' directly automatically.
+* Plugin autoloading - currently the user has to add the gem to the `Gemfile` and run bundle install, rails db:create and rails db:migrate manually. Better would be to use a mechanism to load all gem engines in the `/plugins' directly and automatically (for example, like how Discourse does it).
 * Thin controller - the locations controller is slightly bloated: the `ip_address` and `import_data` methods should either call private methods or use helper modules.
-* Rake task - the data import can be moved to a helper module and parameterized so that for instance it can be used in watchful mode and/or crontab for importing data whenever the file changes or at certain times as night.
+* Rake task - the data import can be moved to a helper module and parameterized so that for instance it can be used in watchful mode and/or crontab for importing data whenever the file changes or at certain times as night. The way it is now, you have to make a POST request using the correct url.
 * Google maps - for the search ip_address results it would have been nice to show the location on google maps.
 
 
