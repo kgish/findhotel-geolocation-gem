@@ -407,7 +407,7 @@ Finished in 0.506299s, 61.2287 runs/s, 134.3080 assertions/s.
 
 ## Rails application
 
-I chose Ruby on Rails and Ember which are wonderful front- and back-end frameworks for building responsive demo applications. For more details I invite to have a look at my github [Ember, Rails and JSON API ](https://github.com/kgish/ember-rails-template) repositiory.
+I chose Ruby on Rails and Ember which are wonderful front- and back-end frameworks for building responsive demo applications. For more details, I invite to have a look at my github [Ember, Rails and JSON API ](https://github.com/kgish/ember-rails-template) repositiory.
 
 
 ### Installation
