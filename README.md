@@ -2,19 +2,41 @@
 
 Here is a technical description covering the most important aspects of the geolocation gem, e.g. how you can easily install it right away, or if you prefer how to build everthing from scratch from start to end.
 
-
 ## Installation
 
-The installation is straighforward.
+The installation is straight-forward. We will clone the application demo `findhotel-geolocator` for the github
+
+```shell
+$ git clone https://github.com/kgish/findhotel-geolocator.git
+$ cd findhotel-geolocator
+$ bundle install
+$ cd frontend
+$ npm install
+$ bower install
+$ cd ..
+$ bin/rails server
+```
+
+Go to the import page at `http://localhost:3000/import` and hit the [Import!]-button. Please note, that for demo purposes this import file is a smaller version of the original, having 1000 lines instead of 1000000 lines which take a long time to import: 82 minutes (see below).
+
+# Development of the gem
+
+If you only want to clone the `findhotel-geolocation-gem` for development and testing purposes, then do the following:
 
 ```shell
 $ git clone https://github.com/kgish/findhotel-geolocation-gem.git path-to-plugins/geolocation
 ```
 
-Add this line to your application's `Gemfile`:
+Add this line to your Rails application's `Gemfile`:
 
 ```ruby
 gem 'geolocation', path: 'path-to-plugins/geolocation'
+```
+
+or
+
+```ruby
+gem 'geolocation', :git => 'https://github.com/kgish/findhotel-geolocation-gem.git'
 ```
 
 Finally, you'll need to include the new gem in the bundle:
@@ -26,8 +48,10 @@ $ bundle install
 An example demo is available on Heroku by visiting the following link:
 
 ```
-https://findhotel-geolocator-demo.herokuapp.com/
+https://findhotel-geolocator.herokuapp.com/
 ```
+
+(Unfortunately, due to a bug in the `ember-cli-rails` gem, I was unable to get this up and running. I will keep trying, but it is quite tricky according to the forum discussions.
 
 
 ## Create plugin
@@ -353,7 +377,7 @@ Where:
 
 ## Testing
 
-I use good old Minitest for verifying that the gem is working properly, namely by executing the commands:
+I use good old [Minitest](http://guides.rubyonrails.org/testing.html) for verifying that the gem is working properly, namely by executing the commands:
 
 ```shell
 cd test/dummy
@@ -384,6 +408,36 @@ Finished in 0.506299s, 61.2287 runs/s, 134.3080 assertions/s.
 ## Rails application
 
 I chose Ruby on Rails and Ember which are wonderful front- and back-end frameworks for building responsive demo applications. For more details I invite to have a look at my github [Ember, Rails and JSON API ](https://github.com/kgish/ember-rails-template) repositiory.
+
+
+### Installation
+
+```shell
+$ git clone https://github.com/kgish/findhotel-geolocator.git
+$ cd findhotel-geolocator
+```
+
+Ensure that the following line is present in the Gemfile:
+
+```
+gem 'geolocation', :git => 'https://github.com/kgish/findhotel-geolocation-gem.git'
+```
+
+Build everything.
+
+```shell
+$ bundle install
+$ bin/rails db:create
+$
+```
+
+For the frontend stuff using Ember.
+
+```shell
+$ cd frontend
+$ npm install
+$ bower install
+```
 
 ### Geolocation
 
@@ -566,7 +620,7 @@ $ git commit -m"Ran rails generate ember:heroku"
 Make sure that you have heroku installed and then you can create the application:
 
 ```shell
-$ heroku create findhotel-geolocator-demo
+$ heroku create findhotel-geolocator
 ```
 
 Add the NodeJS buildpack and configure NPM to include the bower dependency's executable file.
@@ -593,7 +647,7 @@ $ heroku open
 The url is:
 
 ```
-https://findhotel-geolocator-demo.herokuapp.com/
+https://findhotel-geolocator.herokuapp.com/
 ```
 
 
@@ -604,6 +658,8 @@ According to the code challenge, the REST API application (that uses the aforeme
 I must be frank that I do not have extensive experience with Docker beyond the basics, and this has proven to be quite a challenge for me. However, undaunted and eager to try thing out anyway this is as far as I got.
 
 ### Application
+
+See [Dockerizing a Ruby on Rails Application](https://semaphoreci.com/community/tutorials/dockerizing-a-ruby-on-rails-application) and [Quickstart: Compose and Rails](https://docs.docker.com/compose/rails/) for more information.
 
 ### Database
 
@@ -642,12 +698,12 @@ Took a long coffee break, and when I came back I got these results.
 Total elapsed time: 82 minutes!
 
 ```shell
-$ pg_dump -Fp myapp_development --file=findhotel_locations_db.sql
+$ pg_dump -Fp myapp_development --file=findhotel_locations.sql
 ```
 
 Create a Dockerfile as explained in [Dockerize PostgreSQL](https://docs.docker.com/engine/examples/postgresql_service/).
 
-Build an image from the Dockerfile assign it a name.
+Build an image from the Dockerfile assign it the name `geolocation_postgresql`.
 
 ```shell
 $ sudo docker build -t geolocation_postgresql .
@@ -656,7 +712,7 @@ $ sudo docker build -t geolocation_postgresql .
 Run the PostgreSQL server container (in the foreground).
 
 ```shell
-$ docker run --rm -P --name findhotel_geolocation_db geolocation_postgresql
+$ docker run --rm -P --name findhotel_geolocation geolocation_postgresql
 ```
 
 List info.
@@ -673,6 +729,12 @@ Connect and login.
 ```shell
 $ psql -h localhost -p 32772 -d docker -U docker --password
 docker=#
+```
+
+Now we can take the the `findhotel_locations.sql` data dump and import it into the container:
+
+```shell
+$ psql -h localhost -p 32772 -d docker -U docker --password -f findhotel_locations.sql
 ```
 
 I am eager to learn more about Docker and the fun things you can do with it.
