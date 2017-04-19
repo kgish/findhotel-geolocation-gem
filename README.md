@@ -380,11 +380,87 @@ Finished in 0.506299s, 61.2287 runs/s, 134.3080 assertions/s.
 
 ## Rails application
 
-I chose Ruby on Rails which is a wonderful framework for building demo applications.
+I chose Ruby on Rails and Ember which are wonderful front- and back-end frameworks for building responsive demo applications. For more details I invite to have a look at my github [Ember, Rails and JSON API ](https://github.com/kgish/ember-rails-template) repositiory.
+
+### Geolocation
 
 On the home page you can enter an IP address and (hopefully) receive the matching location, otherwise an error is shown (invalid or not found).
 
-![Screenshot of the homepage](images/screenshot-homepage.png)
+![Screenshot of homepage](images/screenshot-homepage.png)
+
+On success:
+
+```
+GET /geolocation/ip_address/200.106.141.15
+
+```
+
+Response:
+
+```
+{
+  "location": {
+    "id": 20173,
+    "ip_address": {
+      "family": 2,
+      "addr": 3362426127,
+      "mask_addr": 4294967295
+    },
+    "country_code": "SI",
+    "country": "Nepal",
+    "city": "DuBuquemouth",
+    "latitude": -84.8750309468984,
+    "longitude": 7.20643593336433,
+    "mystery_value": 7823011346
+  }
+}
+```
+
+Screenshot:
+
+![Screenshot of the geolocation 200](images/screenshot-geolocation-200.png)
+
+On error invalid:
+
+```
+GET /geolocation/ip_address/1234567890
+
+```
+
+Response:
+
+```
+{
+  "errors": [
+    "422 Invalid IP Address"
+  ]
+}
+```
+
+Screenshot:
+
+![Screenshot of the geolocation 422](images/screenshot-geolocation-422.png)
+
+On error not found:
+
+```
+GET geolocation/ip_address/200.196.141.15
+```
+
+Response:
+
+```
+{
+  "errors": [
+    "404 Not Found"
+  ]
+}
+```
+
+![Screenshot of geolocation 404](images/screenshot-geolocation-404.png)
+
+
+### Data import
 
 The data import can also be initiated from the import page:
 
