@@ -392,7 +392,6 @@ On success:
 
 ```
 GET /geolocation/ip_address/200.106.141.15
-
 ```
 
 Response:
@@ -424,7 +423,6 @@ On error invalid:
 
 ```
 GET /geolocation/ip_address/1234567890
-
 ```
 
 Response:
@@ -470,7 +468,6 @@ On success:
 
 ```
 POST {} /geolocation/ip_address/import_data
-
 ```
 
 Response:
@@ -495,7 +492,7 @@ Response:
       "errors": [
         {
           "line": 4,
-          "values": ",PY,Falkland Islands (Malvinas),,75.41685191518815,-144.6943217219469,0",
+          "values": ",PY,Falkland Islands (Malvinas),,75.4168...,-144.6943...,0",
           "messages": {
             "ip_address": [
               "can't be blank"
@@ -505,7 +502,7 @@ Response:
         ...
         {
           "line": 46,
-          "values": "85.68.71.24,PA,Netherlands,New Alessiaview,-1.5710614893880432,174.57963021150817,3326541859",
+          "values": "85.68.71.24,PA,Netherlands,New Alessiaview,-1.5710...,174.5796...,332...",
           "messages": {
             "city": [
               "has already been taken"
@@ -524,14 +521,13 @@ Response:
 
 Rejected records:
 
-![Screenshot of the import data 200](images/screenshot-import-200-2.png)
+![Screenshot of the import data 200 reject records](images/screenshot-import-200-2.png)
 
 
 On error no such file or directory:
 
 ```
 POST { file_name: 'missing-file.csv'} /geolocation/ip_address/import_data
-
 ```
 
 Response:
@@ -599,7 +595,9 @@ https://findhotel-geolocator-demo.herokuapp.com/
 
 ## Dockerization
 
-...
+### Application
+
+### Database
 
 
 ## TODO
