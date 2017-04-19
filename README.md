@@ -545,6 +545,8 @@ Response:
 
 ## Heroku deployment
 
+According to the assignment, I should deploy the project on a cloud platform of your choice. I have chosen Heroku because I have much experience deploying Rails applications there.
+
 In order for the following to work properly, ensure that you've added the following lines (see above) to your `Gemfile`:
 
 ```
@@ -595,14 +597,59 @@ https://findhotel-geolocator-demo.herokuapp.com/
 
 ## Dockerization
 
+According to the code challenge, the REST API application (that uses the aforementioned gem) should be Dockerised and the Dockerfile should be included in the solution.
+
+I must be frank that I do not have extensive experience with Docker beyond the basics, and this has proven to be quite a challenge for me. However, undaunted and eager to try thing out anyway this is as far as I got.
+
 ### Application
 
 ### Database
 
+```shell
+$ curl -d '{"file_name":"data_dump_org.csv"}' -H "Content-Type: application/json" \
+    -X POST http://localhost:3000/location/import_data >import_data.log
+```
+
+Create a Dockerfile as explained in [Dockerize PostgreSQL](https://docs.docker.com/engine/examples/postgresql_service/).
+
+Build an image from the Dockerfile assign it a name.
+
+```shell
+$ sudo docker build -t geolocation_postgresql .
+```
+
+Run the PostgreSQL server container (in the foreground).
+
+```shell
+$ docker run --rm -P --name findhotel_geolocation_db geolocation_postgresql
+```
+
+List info.
+
+```
+$ sudo docker ps
+CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS              PORTS                     NAMES
+bb100b4e5171        geolocation_postgresql   "/usr/lib/postgres..."   6 seconds ago       Up 4 seconds        0.0.0.0:32772->5432/tcp   findhotel_geolocation_db
+
+```
+
+Connect and login.
+
+```shell
+$ psql -h localhost -p 32772 -d docker -U docker --password
+docker=#
+```
+
+I am eager to learn more.
 
 ## TODO
 
-...
+Unfortunately, I do not have alot of spare time lately, so for the sake of completeness I have listed here those items of the code challenge which must end up on the todo list.
+
+* DB configuration - although I've made the gem configurable (see above) I was not able to make it DB configurable.
+* Containers - using the standard Heroku environment for Rails applications, I did not make full use of the dockerized containers.
+* Plugin autoloading - currently the user has to add the gem to the `Gemfile` and run bundle install, rails db:create and rails db:migrate manually. Better would be to use a mechanism to load all gem engines in the `/plugins' directly automatically.
+*
 
 
 ## License
