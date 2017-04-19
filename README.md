@@ -73,7 +73,7 @@ class CreateGeolocationLocations < ActiveRecord::Migration[5.0]
 end
 ```
 
-Motivations:
+**Motivations**:
 
 * Type `inet` is supported by postgresql.
 * The 'ip_address` column is indexed to speed up queries since the IP address is used for searching the database.
@@ -126,7 +126,7 @@ module Geolocation
 end
 ```
 
-Motivations:
+**Motivations**:
 
 * ip_address MUST be a valid inet value
 * ip_address and country MUST be present
@@ -238,7 +238,7 @@ module Geolocation
   end
 ```
 
-Motivation:
+**Motivations**:
 
 * it is easier to be able to run the migrations as usual from the application root directory.
 * the application will generate an error on startup if this has accidentally been forgotten.
@@ -254,7 +254,7 @@ Geolocation::Engine.routes.draw do
 end
 ```
 
-Motivation:
+**Motivations**:
 
 * the `constraints` modifier is used in order to allow dots (.) to appear in the passed `:id` parameter.
 * explicily named the GET /ip_address route with an `as: 'ip_address'` so that I can use `ip_address_url` in the tests (see below).
@@ -280,7 +280,7 @@ module Geolocation
 end
 ```
 
-Motivation:
+**Motivations**:
 
 * it should not be necessary for the application `routes.rb` file to have to be edited manually but rather it should be automatic.
 
