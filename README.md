@@ -466,8 +466,88 @@ The data import can also be initiated from the import page:
 
 ![Screenshot of the import page](images/screenshot-import.png)
 
+On success:
 
-## Heroku App
+```
+POST {} /geolocation/ip_address/import_data
+
+```
+
+Response:
+
+```
+{
+  "import_data": {
+    "file_name": "data_dump.csv",
+    "upload_dir": "uploads",
+    "allow_blank": true,
+    "delete_all": true,
+    "max_lines": 0,
+    "stopwatch": {
+      "started": "2017-04-19 15:23:11 +0200",
+      "finished": "2017-04-19 15:23:16 +0200",
+      "elapsed": "5.016864677"
+    },
+    "records": {
+      "total": 1000,
+      "ok": 889,
+      "nok": 111,
+      "errors": [
+        {
+          "line": 4,
+          "values": ",PY,Falkland Islands (Malvinas),,75.41685191518815,-144.6943217219469,0",
+          "messages": {
+            "ip_address": [
+              "can't be blank"
+            ]
+          }
+        },
+        ...
+        {
+          "line": 46,
+          "values": "85.68.71.24,PA,Netherlands,New Alessiaview,-1.5710614893880432,174.57963021150817,3326541859",
+          "messages": {
+            "city": [
+              "has already been taken"
+            ]
+          }
+        },
+        ...
+      ]
+    }
+  }
+}
+```
+
+
+![Screenshot of the import data 200](images/screenshot-import-200-1.png)
+
+Rejected records:
+
+![Screenshot of the import data 200](images/screenshot-import-200-2.png)
+
+
+On error no such file or directory:
+
+```
+POST { file_name: 'missing-file.csv'} /geolocation/ip_address/import_data
+
+```
+
+Response:
+
+```
+{
+  "errors": [
+    "422 No such file or directory"
+  ]
+}
+```
+
+![Screenshot of the import data 200](images/screenshot-import-422.png)
+
+
+## Heroku deployment
 
 In order for the following to work properly, ensure that you've added the following lines (see above) to your `Gemfile`:
 
