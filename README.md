@@ -2,7 +2,7 @@
 
 Here is a technical description covering the most important aspects of the geolocation gem, e.g. how you can easily install it right away, or if you prefer how to build everthing from scratch from start to end.
 
-## Installation
+## Installation with demo
 
 The installation is straight-forward. We will clone the application demo `findhotel-geolocator` for the github
 
@@ -19,7 +19,7 @@ $ bin/rails server
 
 Go to the import page at `http://localhost:3000/import` and hit the [Import!]-button. Please note, that for demo purposes this import file is a smaller version of the original, having 1000 lines instead of 1000000 lines which take a long time to import: 82 minutes (see below).
 
-# Development of the gem
+## Development of the gem
 
 If you only want to clone the `findhotel-geolocation-gem` for development and testing purposes, then do the following:
 
