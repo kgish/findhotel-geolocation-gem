@@ -43,6 +43,7 @@ $ cd geolocator
 
 From now on it will be assumed unless otherwise specified that you are running commands from the plugin root directory.
 
+
 ## Migration
 
 Generate the `Location` model and associated scaffolding:
@@ -86,6 +87,7 @@ Now we can run the migration:
 $ bin/rails db:create
 $ bin/rails db:migrate
 ```
+
 
 ## Models
 
@@ -134,6 +136,7 @@ end
 * longitude and latitude may be missing but when present must have a value within legal range
 * country_code MUST contain exactly 2 letters
 * other attributes may be missing
+
 
 ## Controllers
 
@@ -363,7 +366,7 @@ The following tests are present:
 * `test/controllers/geolocation/locations_controller_test.rb` - index, show, ip_address and import_data for :success, :not_found and :unprocessable_entity.
 * `test/integration/geolocation/configuration_test.rb` for all settings
 
-If everything works according to plan, you should see something like this.
+If everything works according to plan, you should see something like this (fingers-crossed):
 
 ```
 Run options: --seed 24560
@@ -456,7 +459,6 @@ Response:
 ```
 
 ![Screenshot of geolocation 404](images/screenshot-geolocation-404.png)
-
 
 ### Data import
 
@@ -642,14 +644,16 @@ docker=#
 
 I am eager to learn more.
 
+
 ## TODO
 
-Unfortunately, I do not have alot of spare time lately, so for the sake of completeness I have listed here those items of the code challenge which must end up on the todo list.
+Unfortunately, I do not have alot of spare time lately, so for the sake of completeness I have listed here those items of the code challenge which I was unable to complete and must end up on the much dreaded todo list.
 
 * DB configuration - although I've made the gem configurable (see above) I was not able to make it DB configurable.
 * Containers - using the standard Heroku environment for Rails applications, I did not make full use of the dockerized containers.
 * Plugin autoloading - currently the user has to add the gem to the `Gemfile` and run bundle install, rails db:create and rails db:migrate manually. Better would be to use a mechanism to load all gem engines in the `/plugins' directly automatically.
-*
+* Thin controller - the locations controller is slightly bloated: the `ip_address` and `import_data` methods should either call private methods or use helper modules.
+* Rake task - the data import can be moved to a helper module and parameterized so that for instance it can be used in watchful mode and/or crontab for importing data whenever the file changes or at certain times as night.
 
 
 ## License
@@ -661,5 +665,3 @@ The gem is available as open source under the terms of the [MIT License](http://
 Kiffin Gish \< kiffin.gish@planet.nl \>
 
 \- You're never too old to learn new stuff.
-
-
