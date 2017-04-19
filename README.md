@@ -607,9 +607,42 @@ I must be frank that I do not have extensive experience with Docker beyond the b
 
 ### Database
 
+First of all I ran a complete import of the `data_dump.csv` file on my development laptop.
+
 ```shell
-$ curl -d '{"file_name":"data_dump_org.csv"}' -H "Content-Type: application/json" \
+$ curl -d '{"file_name":"data_dump.csv"}' -H "Content-Type: application/json" \
     -X POST http://localhost:3000/location/import_data >import_data.log
+```
+
+Took a long coffee break, and when I came back I got these results.
+
+```
+{
+  "import_data": {
+    "file_name": "data_dump.csv",
+    "upload_dir": "uploads",
+    "allow_blank": true,
+    "delete_all": true,
+    "max_lines": 0,
+    "stopwatch": {
+      "started": "2017-04-19 15:56:02 +0200",
+      "finished": "2017-04-19 17:17:58 +0200",
+      "elapsed": "4915.500436757"
+    },
+    "records": {
+      "total":1000000,
+      "ok": 882373,
+      "nok":117627,
+      errors: [...]
+    }
+  }
+}
+```
+
+Total elapsed time: 82 minutes!
+
+```shell
+$ pg_dump -Fp myapp_development --file=findhotel_locations_db.sql
 ```
 
 Create a Dockerfile as explained in [Dockerize PostgreSQL](https://docs.docker.com/engine/examples/postgresql_service/).
@@ -654,6 +687,7 @@ Unfortunately, I do not have alot of spare time lately, so for the sake of compl
 * Plugin autoloading - currently the user has to add the gem to the `Gemfile` and run bundle install, rails db:create and rails db:migrate manually. Better would be to use a mechanism to load all gem engines in the `/plugins' directly automatically.
 * Thin controller - the locations controller is slightly bloated: the `ip_address` and `import_data` methods should either call private methods or use helper modules.
 * Rake task - the data import can be moved to a helper module and parameterized so that for instance it can be used in watchful mode and/or crontab for importing data whenever the file changes or at certain times as night.
+* Google maps - for the search ip_address results it would have been nice to show the location on google maps.
 
 
 ## License
