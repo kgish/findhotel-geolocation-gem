@@ -428,7 +428,7 @@ Build everything.
 ```shell
 $ bundle install
 $ bin/rails db:create
-$
+$ bin/rails db:migrate
 ```
 
 For the frontend stuff using Ember.
