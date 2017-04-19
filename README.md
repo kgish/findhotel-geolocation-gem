@@ -744,7 +744,7 @@ I am eager to learn more about Docker and the fun things you can do with it.
 
 Unfortunately, I do not have alot of spare time lately, so for the sake of completeness (and ensuring that I complete this code challenge in time) I have listed here those items which I was unable to complete and must end up on the much dreaded todo list.
 
-* DB configuration - although I've made the gem configurable (see above) I was not able to make it DB configurable.
+* DB configuration - although I've made the gem configurable (see above) I was not able to make it DB configurable. To be honest, this doesn't make much sense since you're dependant on the database setup of the application using the gem, or not? I probably didn't understand the question completely is all.
 * Containers - using the standard Heroku environment for Rails applications, I did not make full use of the dockerized containers.
 * Plugin autoloading - currently the user has to add the gem to the `Gemfile` and run bundle install, rails db:create and rails db:migrate manually. Better would be to use a mechanism to load all gem engines in the `/plugins' directly automatically.
 * Thin controller - the locations controller is slightly bloated: the `ip_address` and `import_data` methods should either call private methods or use helper modules.
