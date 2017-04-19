@@ -642,12 +642,12 @@ $ psql -h localhost -p 32772 -d docker -U docker --password
 docker=#
 ```
 
-I am eager to learn more.
+I am eager to learn more about Docker and the fun things you can do with it.
 
 
 ## TODO
 
-Unfortunately, I do not have alot of spare time lately, so for the sake of completeness I have listed here those items of the code challenge which I was unable to complete and must end up on the much dreaded todo list.
+Unfortunately, I do not have alot of spare time lately, so for the sake of completeness (and ensuring that I complete this code challenge in time) I have listed here those items which I was unable to complete and must end up on the much dreaded todo list.
 
 * DB configuration - although I've made the gem configurable (see above) I was not able to make it DB configurable.
 * Containers - using the standard Heroku environment for Rails applications, I did not make full use of the dockerized containers.
