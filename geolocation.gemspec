@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Kiffin Gish"]
   s.email       = ["kiffin.gish@planet.nl"]
   s.homepage    = "http://gishtech.com"
-  s.summary     = "Geolocation gem for Findhotel."
+  s.summary     = "Geolocation gem"
   s.description = "Service for matching location information to IP address."
   s.license     = "MIT"
 

@@ -4,11 +4,11 @@ Here is a technical description covering the most important aspects of the geolo
 
 ## Installation with demo
 
-The installation is straight-forward. We will clone the application demo `findhotel-geolocator` for the github
+The installation is straight-forward. We will clone the application demo `geolocation-gem-demo` for the github
 
 ```shell
-$ git clone https://github.com/kgish/findhotel-geolocator.git
-$ cd findhotel-geolocator
+$ git clone https://github.com/kgish/geolocation-gem-demo.git
+$ cd geolocation-gem-demo
 $ bundle install
 $ cd frontend
 $ npm install
@@ -21,10 +21,10 @@ Go to the import page at `http://localhost:3000/import` and hit the [Import!]-bu
 
 ## Development of the gem
 
-If you only want to clone the `findhotel-geolocation-gem` for development and testing purposes, then do the following:
+If you only want to clone the `geolocation-gem` for development and testing purposes, then do the following:
 
 ```shell
-$ git clone https://github.com/kgish/findhotel-geolocation-gem.git path-to-plugins/geolocation
+$ git clone https://github.com/kgish/geolocation-gem.git path-to-plugins/geolocation
 ```
 
 Add this line to your Rails application's `Gemfile`:
@@ -36,7 +36,7 @@ gem 'geolocation', path: 'path-to-plugins/geolocation'
 or
 
 ```ruby
-gem 'geolocation', :git => 'https://github.com/kgish/findhotel-geolocation-gem.git'
+gem 'geolocation', :git => 'https://github.com/kgish/geolocation-gem.git'
 ```
 
 Finally, you'll need to include the new gem in the bundle:
@@ -48,7 +48,7 @@ $ bundle install
 An example demo is available on Heroku by visiting the following link:
 
 ```
-https://findhotel-geolocator.herokuapp.com/
+https://geolocation-gem-demo.herokuapp.com/
 ```
 
 (Unfortunately, due to a bug in the `ember-cli-rails` gem, I was unable to get this up and running. I will keep trying, but it is quite tricky according to the forum discussions.
@@ -413,14 +413,14 @@ I chose Ruby on Rails and Ember which are wonderful front- and back-end framewor
 ### Installation
 
 ```shell
-$ git clone https://github.com/kgish/findhotel-geolocator.git
-$ cd findhotel-geolocator
+$ git clone https://github.com/kgish/geolocation-gem-demo.git
+$ cd geolocation-gem-demo
 ```
 
 Ensure that the following line is present in the Gemfile:
 
 ```
-gem 'geolocation', :git => 'https://github.com/kgish/findhotel-geolocation-gem.git'
+gem 'geolocation', :git => 'https://github.com/kgish/geolocation-gem.git'
 ```
 
 Build everything.
@@ -620,7 +620,7 @@ $ git commit -m"Ran rails generate ember:heroku"
 Make sure that you have heroku installed and then you can create the application:
 
 ```shell
-$ heroku create findhotel-geolocator
+$ heroku create geolocation-gem-demo
 ```
 
 Add the NodeJS buildpack and configure NPM to include the bower dependency's executable file.
@@ -648,7 +648,7 @@ $ heroku open
 The url is:
 
 ```
-https://findhotel-geolocator.herokuapp.com/
+https://geolocation-gem-demo.herokuapp.com/
 ```
 
 
